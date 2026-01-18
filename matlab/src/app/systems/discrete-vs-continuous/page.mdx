@@ -1,0 +1,36 @@
+# Discrete-Time Signals vs Continuous-Time Signals
+
+Discrete-time signals exist only at sample times, determined by sampling frequency.
+
+```bash filename="discrete_vs_continuous.m" copy
+clear all; clc;
+
+% Continuous-time representation (mathematical)
+t_cont = 0:0.001:1;  % Very fine resolution (1000 points per second)
+x_continuous = sin(2*pi*5*t_cont);
+
+% Discrete-time representation (physical reality)
+fs = 50;             % 50 Hz sampling
+t_discrete = 0:1/fs:1;
+x_discrete = sin(2*pi*5*t_discrete);
+
+figure('Position', [100, 100, 1200, 400]);
+
+subplot(1, 2, 1);
+plot(t_cont, x_continuous, 'b-', 'LineWidth', 2);
+xlabel('Time (s)');
+ylabel('Amplitude');
+title('Continuous-Time: High Resolution');
+grid on;
+xlim([0, 0.5]);
+
+subplot(1, 2, 2);
+stem(t_discrete, x_discrete, 'r', 'filled', 'LineWidth', 2);
+xlabel('Time (s)');
+ylabel('Amplitude');
+title(['Discrete-Time: fs = ', num2str(fs), ' Hz']);
+grid on;
+xlim([0, 0.5]);
+```
+
+**Explanation**: Sampling converts continuous signals to discrete samples. The sampling frequency fs determines the spacing between samples. If fs is too low relative to signal frequency, aliasing occurs (a 5 Hz signal sampled at 10 Hz appears as only 2 cycles in 1 second).

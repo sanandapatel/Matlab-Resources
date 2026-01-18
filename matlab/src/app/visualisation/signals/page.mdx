@@ -1,0 +1,48 @@
+# Continuous vs Discrete-Time Signals: plot vs stem
+
+### plot
+For Continuous-Time Signals or Smooth Visualization
+
+```bash filename="plot.m" copy
+clear all; clc;
+
+fs = 1000;           % 1 kHz sampling
+t = 0:1/fs:1;        % 1 second, 1000 samples
+f = 10;              % 10 Hz sine wave
+x = sin(2*pi*f*t);
+
+figure;              % Create a new figure window
+plot(t, x, 'b-', 'LineWidth', 2);  % Blue line, width 2 points
+
+xlabel('Time (s)');
+ylabel('Amplitude');
+title('10 Hz Sine Wave (plot)');
+grid on;
+xlim([0, 0.5]);      % Show only first 0.5 seconds for clarity
+```
+
+**Explanation**: `plot(t, x)` connects sample points with lines, giving a smooth waveform visualization. This is appropriate for continuous-time interpretations or when sample density is high. `'b-'` specifies blue color and solid line. `'LineWidth'` controls thickness. `xlim([0, 0.5])` zooms to show the first half-second.
+
+### stem
+For Discrete-Time Signals
+
+```bash filename="stem.m" copy
+clear all; clc;
+
+% Low sampling rate to show discrete nature
+fs = 20;             % Only 20 samples per second
+duration = 1;
+t = 0:1/fs:duration-1/fs;  % 20 samples total
+f = 2;               % 2 Hz sine wave
+x = sin(2*pi*f*t);
+
+figure;
+stem(t, x, 'b', 'filled');  % 'filled' marks show solid dots
+
+xlabel('Time (s)');
+ylabel('Amplitude');
+title('2 Hz Sine Wave at 20 Hz Sampling (stem)');
+grid on;
+```
+
+**Explanation**: `stem` draws vertical lines from the x-axis to each sample point, emphasizing that the signal is discrete—values only exist at specific sample times. This is the "correct" visualization for digital signals. Compare the two: `plot` smoothly connects dots, while `stem` shows actual samples.

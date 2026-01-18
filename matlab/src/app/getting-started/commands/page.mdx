@@ -1,0 +1,11 @@
+# Essential Startup Commands
+
+Every MATLAB session should start with these cleanup commands:
+
+```bash copy
+clear all;   % Delete all variables from workspace
+clc;         % Clear the Command Window (removes previous output)
+close all;   % Close all figure windows
+```
+
+**Explanation**: `clear all` ensures you start with a clean workspace—no leftover variables from previous sessions. `clc` clears the screen for readability. `close all` closes all plots. These prevent subtle bugs where old data interferes with new calculations.

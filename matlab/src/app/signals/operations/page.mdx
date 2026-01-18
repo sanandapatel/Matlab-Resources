@@ -1,0 +1,71 @@
+# Signal Operations: Shifting, Scaling, Reversal
+
+These operations are fundamental in convolution and correlation.
+
+```bash filename="operations.m" copy
+clear all; clc;
+
+N = 10;
+n = 0:N-1;
+x_original = sin(2*pi*1*n/N);  % 1-cycle sine wave
+
+% Amplitude scaling
+x_scaled = 2 * x_original;  % Double amplitude
+
+% Time-domain shifting (left = advance, right = delay)
+% Shift left by 3: x[n+3]
+shift_amount = 3;
+x_shifted_left = [x_original(shift_amount+1:end), zeros(1, shift_amount)];
+
+% Shift right by 3: x[n-3]
+x_shifted_right = [zeros(1, shift_amount), x_original(1:end-shift_amount)];
+
+% Reversal (time-reversal): x[-n]
+x_reversed = flip(x_original);
+
+figure('Position', [100, 100, 1200, 600]);
+
+subplot(3, 2, 1);
+stem(n, x_original, 'b', 'filled');
+title('Original: x[n]');
+ylabel('Amplitude');
+grid on;
+ylim([-1.5, 1.5]);
+
+subplot(3, 2, 2);
+stem(n, x_scaled, 'r', 'filled');
+title('Scaled: 2·x[n]');
+ylabel('Amplitude');
+grid on;
+ylim([-1.5, 1.5]);
+
+subplot(3, 2, 3);
+stem(n, x_shifted_left, 'g', 'filled');
+title('Shifted Left: x[n+3]');
+ylabel('Amplitude');
+grid on;
+ylim([-1.5, 1.5]);
+
+subplot(3, 2, 4);
+stem(n, x_shifted_right, 'm', 'filled');
+title('Shifted Right: x[n-3]');
+ylabel('Amplitude');
+grid on;
+ylim([-1.5, 1.5]);
+
+subplot(3, 2, 5);
+stem(n, x_reversed, 'c', 'filled');
+title('Reversed: x[-n]');
+ylabel('Amplitude');
+grid on;
+ylim([-1.5, 1.5]);
+
+subplot(3, 2, 6);
+stem(n, x_scaled .* x_reversed, 'k', 'filled');
+title('Scaled & Reversed: 2·x[-n]');
+ylabel('Amplitude');
+grid on;
+ylim([-1.5, 1.5]);
+```
+
+**Explanation**: Shifting in code is tricky. To shift left by 3 (`x[n+3]`), you remove the first 3 samples and pad with zeros at the end. To shift right by 3 (`x[n-3]`), you pad with zeros at the start. `flip` reverses the vector. These operations are essential for correlation and designing filters.

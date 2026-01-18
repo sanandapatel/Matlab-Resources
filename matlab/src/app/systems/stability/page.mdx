@@ -1,0 +1,53 @@
+# Stability: Bounded-Input, Bounded-Output (BIBO)
+
+A system is BIBO stable if every bounded input produces a bounded output. For an IIR system, this depends on the feedback coefficients.
+
+**Rule**: For a first-order system `y[n] = a·x[n] + b·y[n-1]`, the system is stable if `|b| < 1`.
+
+More generally, if the impulse response `h[n]` satisfies `Σ|h[n]| < ∞`, the system is stable.
+
+```bash filename="stability.m" copy
+clear all; clc;
+
+% Stable system: b = 0.8 (|b| < 1)
+b_stable = 0.8;
+h_stable = 0.4 * (b_stable .^ (0:50));
+
+% Unstable system: b = 1.2 (|b| > 1)
+b_unstable = 1.2;
+h_unstable = 0.4 * (b_unstable .^ (0:50));
+
+% Marginally stable: b = 1.0 (|b| = 1)
+b_marginal = 1.0;
+h_marginal = 0.4 * ones(1, 51);
+
+figure('Position', [100, 100, 1200, 400]);
+
+subplot(1, 3, 1);
+stem(0:50, h_stable, 'b', 'filled');
+xlabel('Sample n');
+ylabel('h[n]');
+title(['Stable: b = ', num2str(b_stable)]);
+grid on;
+set(gca, 'YLim', [0, 0.5]);
+
+subplot(1, 3, 2);
+stem(0:50, h_marginal, 'g', 'filled');
+xlabel('Sample n');
+ylabel('h[n]');
+title(['Marginally Stable: b = ', num2str(b_marginal)]);
+grid on;
+set(gca, 'YLim', [0, 0.5]);
+
+subplot(1, 3, 3);
+stem(0:50, h_unstable(1:51), 'r', 'filled');
+xlabel('Sample n');
+ylabel('h[n]');
+title(['Unstable: b = ', num2str(b_unstable)]);
+grid on;
+set(gca, 'YLim', [0, 100]);
+
+sgtitle('Impulse Response Decay vs Stability');
+```
+
+**Explanation**: The stable system's impulse response decays exponentially to zero. The unstable system grows without bound, meaning even a small input could cause the output to diverge. In filter design, you must ensure stability by constraining feedback coefficients.
