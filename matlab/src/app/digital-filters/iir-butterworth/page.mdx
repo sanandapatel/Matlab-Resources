@@ -1,0 +1,51 @@
+# IIR Filters: Butterworth
+
+IIR filters use feedback to achieve steep frequency responses with fewer coefficients than FIR.
+
+```bash filename="iir_butterworth.m" copy
+clear all; clc;
+
+% Butterworth low-pass specifications
+fs = 1000;
+Wp = 100;              % Passband edge: 100 Hz
+Ws = 200;              % Stopband edge: 200 Hz
+Rp = 3;                % Passband ripple: 3 dB
+Rs = 40;               % Stopband attenuation: 40 dB
+
+% Design filter
+[order, Wn_design] = buttord(Wp/(fs/2), Ws/(fs/2), Rp, Rs);
+[b_butter, a_butter] = butter(order, Wn_design);
+
+disp(['Butterworth filter order: ', num2str(order)]);
+disp(['Designed cutoff frequency: ', num2str(Wn_design*fs/2), ' Hz']);
+
+% Frequency response
+[H_butter, f_butter] = freqz(b_butter, a_butter, 1024, fs);
+
+% Compare with FIR
+b_fir_compare = fir1(100, 0.2);  % Order 100 for similar attenuation
+[H_fir_compare, f_fir_compare] = freqz(b_fir_compare, 1, 1024, fs);
+
+figure('Position', [100, 100, 1200, 400]);
+
+subplot(1, 2, 1);
+plot(f_butter, 20*log10(abs(H_butter)+1e-10), 'b-', 'LineWidth', 2, 'DisplayName', 'IIR Butterworth (Order 5)');
+hold on;
+plot(f_fir_compare, 20*log10(abs(H_fir_compare)+1e-10), 'r-', 'LineWidth', 2, 'DisplayName', 'FIR (Order 100)');
+hold off;
+xlabel('Frequency (Hz)');
+ylabel('Magnitude (dB)');
+title('IIR vs FIR: Same Attenuation');
+legend;
+grid on;
+ylim([-60, 5]);
+xlim([0, 500]);
+
+% Pole-zero plot (stability visualization)
+subplot(1, 2, 2);
+zplane(b_butter, a_butter);
+title('Butterworth Pole-Zero Plot (poles inside unit circle = stable)');
+grid on;
+```
+
+**Explanation**: `buttord` designs the minimum-order filter meeting specs. `butter` computes coefficients. Compare magnitude: IIR achieves the same rolloff with order 5, while FIR needs order `>100`. The trade-off: IIR is more efficient but non-linear phase and potentially unstable (poles must be inside unit circle). The pole-zero plot shows all poles safely inside.

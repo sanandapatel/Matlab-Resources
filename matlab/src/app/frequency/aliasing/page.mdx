@@ -1,0 +1,76 @@
+# Aliasing of Signals
+
+**Nyquist Theorem**: To avoid aliasing, the sampling frequency must be at least twice the highest frequency present in the signal.
+
+If `fs < 2\*f_max`, high frequencies "fold back" and appear as lower frequencies.
+
+```bash filename="aliasing.m" copy
+clear all; clc;
+
+% True signal: 700 Hz sine wave
+f_true = 700;  % Hz
+duration = 0.01;  % 10 ms
+
+% Scenario 1: Adequate sampling (fs = 2000 Hz > 2*700 Hz)
+fs_adequate = 2000;
+t_adequate = 0:1/fs_adequate:duration-1/fs_adequate;
+x_adequate = sin(2*pi*f_true*t_adequate);
+
+% Scenario 2: Insufficient sampling (fs = 1000 Hz < 2*700 Hz)
+fs_insufficient = 1000;
+t_insufficient = 0:1/fs_insufficient:duration-1/fs_insufficient;
+x_insufficient = sin(2*pi*f_true*t_insufficient);
+
+% Nyquist frequency for each sampling rate
+f_nyquist_adequate = fs_adequate/2;
+f_nyquist_insufficient = fs_insufficient/2;
+
+% The aliased frequency appears at |f_true - fs| if f_true > fs/2
+f_aliased = f_true - fs_insufficient;
+disp(['True frequency: ', num2str(f_true), ' Hz']);
+disp(['Sampling rate (adequate): ', num2str(fs_adequate), ' Hz, Nyquist = ', num2str(f_nyquist_adequate), ' Hz']);
+disp(['Sampling rate (insufficient): ', num2str(fs_insufficient), ' Hz, Nyquist = ', num2str(f_nyquist_insufficient), ' Hz']);
+disp(['Aliased frequency: ', num2str(f_aliased), ' Hz']);
+
+figure('Position', [100, 100, 1200, 600]);
+
+subplot(2, 2, 1);
+plot(t_adequate*1000, x_adequate, 'b-', 'LineWidth', 2);
+stem(t_adequate*1000, x_adequate, 'b', 'filled', 'LineWidth', 1);
+xlabel('Time (ms)');
+ylabel('Amplitude');
+title(['Adequate Sampling: fs = ', num2str(fs_adequate), ' Hz (', num2str(fs_adequate/(2*f_true)), 'x Nyquist rate)']);
+grid on;
+
+subplot(2, 2, 2);
+plot(t_insufficient*1000, x_insufficient, 'r-', 'LineWidth', 2);
+stem(t_insufficient*1000, x_insufficient, 'r', 'filled', 'LineWidth', 1);
+xlabel('Time (ms)');
+ylabel('Amplitude');
+title(['Undersampling: fs = ', num2str(fs_insufficient), ' Hz (', num2str(fs_insufficient/(2*f_true)), 'x Nyquist rate)']);
+grid on;
+
+% FFT of both
+X_adequate = abs(fft(x_adequate));
+X_insufficient = abs(fft(x_insufficient));
+freq_adequate = (0:length(x_adequate)-1)*fs_adequate/length(x_adequate);
+freq_insufficient = (0:length(x_insufficient)-1)*fs_insufficient/length(x_insufficient);
+
+subplot(2, 2, 3);
+plot(freq_adequate(1:length(freq_adequate)/2), X_adequate(1:length(X_adequate)/2), 'b-', 'LineWidth', 1.5);
+xlabel('Frequency (Hz)');
+ylabel('Magnitude');
+title('DFT: Adequate Sampling');
+grid on;
+xlim([0, 1000]);
+
+subplot(2, 2, 4);
+plot(freq_insufficient(1:length(freq_insufficient)/2), X_insufficient(1:length(X_insufficient)/2), 'r-', 'LineWidth', 1.5);
+xlabel('Frequency (Hz)');
+ylabel('Magnitude');
+title('DFT: Undersampling (Aliasing)');
+grid on;
+xlim([0, 500]);
+```
+
+**Explanation**: With adequate sampling, the FFT shows a peak at the true frequency (`700 Hz`). With undersampling, the same signal appears as only `300 Hz`—the aliased frequency. Aliasing is irreversible; you can't recover the original signal. This is why anti-aliasing filters are essential before sampling in real ADCs (like your RF measurement systems).

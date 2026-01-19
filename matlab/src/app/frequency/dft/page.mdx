@@ -1,0 +1,57 @@
+# DFT (Discrete Fourier Transform)
+
+The **DFT** evaluates the DTFT at N equally-spaced frequencies, where `N` is the signal length. It's periodic with period `fs` (the sampling frequency).
+
+```bash filename="dft.m" copy
+clear all; clc;
+
+% Signal: 100 Hz sine wave at 1 kHz sampling
+fs = 1000;
+duration = 1;  % 1 second
+t = 0:1/fs:duration-1/fs;
+x = sin(2*pi*100*t);
+
+% Compute DFT
+X = fft(x);  % MATLAB's FFT (fast implementation of DFT)
+
+% Frequency axis
+N = length(x);
+freq_axis = (0:N-1)*fs/N;  % Frequency for each DFT bin
+
+% Magnitude spectrum (one-sided, normalized)
+magnitude_one_sided = 2*abs(X(1:N/2))/N;
+magnitude_one_sided(1) = magnitude_one_sided(1)/2;  % DC component
+freq_one_sided = freq_axis(1:N/2);
+
+% Phase spectrum
+phase = angle(X);
+
+figure('Position', [100, 100, 1200, 600]);
+
+subplot(3, 1, 1);
+plot(t, x, 'b-', 'LineWidth', 1);
+xlabel('Time (s)');
+ylabel('Amplitude');
+title('Input: 100 Hz Sine Wave');
+grid on;
+xlim([0, 0.05]);
+
+subplot(3, 1, 2);
+plot(freq_one_sided, magnitude_one_sided, 'r-', 'LineWidth', 1.5);
+xlabel('Frequency (Hz)');
+ylabel('Magnitude');
+title('DFT Magnitude Spectrum (One-Sided)');
+grid on;
+xlim([0, 300]);
+
+subplot(3, 1, 3);
+plot(freq_one_sided, phase(1:N/2)*180/pi, 'g-', 'LineWidth', 1.5);
+xlabel('Frequency (Hz)');
+ylabel('Phase (degrees)');
+title('DFT Phase Spectrum');
+grid on;
+xlim([0, 300]);
+ylim([-180, 180]);
+```
+
+**Explanation**: `fft` computes the DFT very efficiently (`O(Nlog N)` vs `O(N²)` for naive DFT). The frequency axis is constructed as `(0:N-1)*fs/N`—each bin represents `fs/N` Hz. The magnitude is doubled for the one-sided spectrum (all energy is in positive frequencies due to real signals being conjugate-symmetric). The phase angle shows the initial phase of each frequency component.

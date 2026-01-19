@@ -1,0 +1,88 @@
+# Windowing: Rectangular, Hamming, Hanning
+
+When you apply FFT to a finite signal, you're implicitly multiplying by a rectangular window (1 for the signal duration, 0 elsewhere). This causes **spectral leakage**—energy from one frequency "leaks" into neighboring bins.
+
+Better windows taper the edges smoothly to reduce leakage.
+
+```bash filename="windowing.m" copy
+clear all; clc;
+
+% Signal: pure 100.5 Hz sine (between DFT bins)
+fs = 1000;
+duration = 1;
+t = 0:1/fs:duration-1/fs;
+f = 100.5;  % NOT an integer multiple of fs/N
+x = sin(2*pi*f*t);
+
+% Apply three different windows
+rect_window = ones(size(x));
+hamm_window = hamming(length(x))';
+hann_window = hanning(length(x))';
+
+% Apply windows
+x_rect = x .* rect_window;
+x_hamm = x .* hamm_window;
+x_hann = x .* hann_window;
+
+% Compute FFTs (one-sided)
+N = length(x);
+X_rect = abs(fft(x_rect));
+X_hamm = abs(fft(x_hamm));
+X_hann = abs(fft(x_hann));
+
+freq = (0:N-1)*fs/N;
+
+% Plot windows and their effects
+figure('Position', [100, 100, 1200, 600]);
+
+% Windows in time domain
+subplot(2, 3, 1);
+plot(t(1:100), rect_window(1:100), 'b-', 'LineWidth', 2);
+title('Rectangular Window');
+xlabel('Time (s)');
+ylabel('Amplitude');
+grid on;
+
+subplot(2, 3, 2);
+plot(t(1:100), hamm_window(1:100), 'r-', 'LineWidth', 2);
+title('Hamming Window');
+xlabel('Time (s)');
+ylabel('Amplitude');
+grid on;
+
+subplot(2, 3, 3);
+plot(t(1:100), hann_window(1:100), 'g-', 'LineWidth', 2);
+title('Hanning Window');
+xlabel('Time (s)');
+ylabel('Amplitude');
+grid on;
+
+% Frequency spectra (zoomed in)
+subplot(2, 3, 4);
+plot(freq(1:N/2), X_rect(1:N/2)/max(X_rect(1:N/2)), 'b-', 'LineWidth', 1.5);
+xlabel('Frequency (Hz)');
+ylabel('Normalized Magnitude');
+title('Rectangular Window (Leakage)');
+grid on;
+xlim([80, 120]);
+
+subplot(2, 3, 5);
+plot(freq(1:N/2), X_hamm(1:N/2)/max(X_hamm(1:N/2)), 'r-', 'LineWidth', 1.5);
+xlabel('Frequency (Hz)');
+ylabel('Normalized Magnitude');
+title('Hamming Window (Better)');
+grid on;
+xlim([80, 120]);
+
+subplot(2, 3, 6);
+plot(freq(1:N/2), X_hann(1:N/2)/max(X_hann(1:N/2)), 'g-', 'LineWidth', 1.5);
+xlabel('Frequency (Hz)');
+ylabel('Normalized Magnitude');
+title('Hanning Window (Best)');
+grid on;
+xlim([80, 120]);
+
+sgtitle('Windowing Effect on Spectral Leakage');
+```
+
+**Explanation**: The rectangular window (unwindowed signal) shows severe leakage—high sidelobes around the true frequency. Hamming and Hanning windows taper the edges, reducing sidelobes at the cost of a slightly wider main lobe. Hamming has lower sidelobes; Hanning is more symmetric. Choose based on whether you prioritize frequency resolution (narrow main lobe) or sidelobe suppression.

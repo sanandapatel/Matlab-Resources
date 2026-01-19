@@ -1,0 +1,39 @@
+# Serial Communication with Microcontrollers
+
+Real-world DSP often connects MATLAB to embedded systems (`ESP32`, microcontroller boards).
+
+```bash filename="serial_comm_pseudo.m" copy
+% NOTE: Requires Instrument Control Toolbox (serialport function)
+% This is pseudo-code showing the workflow
+
+function [data_received] = read_from_mcu(comport, baud, n_samples)
+    % Open serial port
+    s = serialport(comport, baud);
+    configureTerminator(s, "CR/LF");
+
+    % Send command to MCU
+    writeline(s, "START_ADC");  % Tells MCU to start collecting
+
+    % Read samples
+    data_received = [];
+    for i = 1:n_samples
+        if s.NumBytesAvailable > 0
+            line = readline(s);
+            value = str2double(line);
+            data_received = [data_received; value];
+        else
+            pause(0.001);  % Wait for data
+        end
+    end
+
+    % Close port
+    clear s;
+end
+
+% Example usage (pseudocode—requires actual MCU):
+% data = read_from_mcu("COM3", 115200, 8000);
+% filtered_data = filter(b, a, data);
+% plot(filtered_data);
+```
+
+**Explanation**: This template reads ADC data from a microcontroller over serial (e.g., `UART` on `ESP32`). The MCU sends ASCII lines (e.g., "2048\n" for a 12-bit ADC value). MATLAB reads, converts to numeric, and processes. For RF applications, this connects your RF sensors to MATLAB for real-time analysis.

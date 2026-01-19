@@ -1,0 +1,76 @@
+# Zero-Phase Filtering with filtfilt
+
+For offline signal processing, `filtfilt` applies the filter forward and backward, achieving zero phase distortion.
+
+```bash filename="zero_phase.m" copy
+clear all; clc;
+
+% Chirp signal (frequency increases with time)
+fs = 1000;
+t = 0:1/fs:1;
+f_start = 10;
+f_end = 200;
+x = chirp(t, f_start, t(end), f_end);  % Frequency increases from 10 to 200 Hz
+
+% Add noise
+x_noisy = x + 0.3*randn(size(t));
+
+% Design filter
+[b, a] = butter(4, 100/(fs/2), 'low');
+
+% Apply filter both ways
+y_causal = filter(b, a, x_noisy);          % Causal (real-time)
+y_zero_phase = filtfilt(b, a, x_noisy);    % Zero-phase (offline)
+
+% Plot
+figure('Position', [100, 100, 1200, 600]);
+
+subplot(3, 1, 1);
+plot(t, x, 'b-', 'LineWidth', 1.5, 'DisplayName', 'Clean chirp');
+hold on;
+plot(t, x_noisy, 'k-', 'LineWidth', 0.5, 'DisplayName', 'Noisy');
+hold off;
+xlabel('Time (s)');
+ylabel('Amplitude');
+title('Original Chirp Signal (10–200 Hz)');
+legend;
+grid on;
+xlim([0, 1]);
+
+subplot(3, 1, 2);
+plot(t, y_causal, 'r-', 'LineWidth', 1);
+xlabel('Time (s)');
+ylabel('Amplitude');
+title('Causal Filter: Distorts Phase');
+grid on;
+xlim([0, 1]);
+
+subplot(3, 1, 3);
+plot(t, y_zero_phase, 'g-', 'LineWidth', 1);
+xlabel('Time (s)');
+ylabel('Amplitude');
+title('Zero-Phase Filter (filtfilt): No Phase Distortion');
+grid on;
+xlim([0, 1]);
+
+% Check phase preservation by looking at instantaneous frequency
+% The chirp should increase linearly; zero-phase preserves this
+figure;
+subplot(2, 1, 1);
+plot(t, y_causal, 'r-', 'LineWidth', 1.5);
+xlabel('Time (s)');
+ylabel('Amplitude');
+title('Causal: Notice slight delay in rising oscillations');
+grid on;
+xlim([0.4, 0.6]);
+
+subplot(2, 1, 2);
+plot(t, y_zero_phase, 'g-', 'LineWidth', 1.5);
+xlabel('Time (s)');
+ylabel('Amplitude');
+title('Zero-Phase: Oscillations align with input');
+grid on;
+xlim([0.4, 0.6]);
+```
+
+**Explanation**: The chirp signal changes frequency over time. Causal filtering (real-time) introduces phase delay, shifting the oscillations. Zero-phase filtering applies the filter twice (forward and backward), canceling the phase distortion. Look at `0.4–0.6 seconds`: the zero-phase version tracks the "clean" signal more accurately. Use `filtfilt` whenever phase preservation is critical (ECG, seismic, vibration analysis).
