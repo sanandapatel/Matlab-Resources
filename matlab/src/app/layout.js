@@ -11,7 +11,8 @@ export const metadata = {
 const banner = <Banner storageKey="some-key">DSP Booster with Matlab</Banner>
 const navbar = (
   <Navbar
-    logo={<b>DSP Booster with Matlab</b>}
+    // logo={<b>DSP Booster with Matlab</b>}
+    logo={<b>Matlab Handbook for DSP</b>}
     projectLink="https://github.com/sanandapatel/Matlab-Resources"
     // ... Your additional navbar options
   />
