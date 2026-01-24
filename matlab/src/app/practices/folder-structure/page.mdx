@@ -1,0 +1,24 @@
+# Folder Structure for DSP Projects
+
+Organize your MATLAB DSP work like professional engineers:
+
+```
+RF_DSP_Project/
+├── data/
+│   ├── raw/                    % Raw ADC/sensor files
+│   ├── processed/              % Filtered, analyzed results
+│   └── references/             % Spec sheets, calibration data
+├── scripts/
+│   ├── main_analysis.m         % Top-level script
+│   ├── helper_functions/
+│   │   ├── load_adc_data.m
+│   │   ├── design_filters.m
+│   │   └── compute_spectra.m
+│   └── tests/                  % Unit tests for functions
+├── results/
+│   ├── plots/                  % Generated figures
+│   └── reports/                % Summary documents
+└── docs/
+    ├── README.md               % Project overview
+    └── methodology.txt         % Filter specs, design choices
+```

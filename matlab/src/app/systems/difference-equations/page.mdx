@@ -1,0 +1,49 @@
+# Difference Equations
+
+A difference equation describes an LTI system recursively:
+
+`y[n] = a₀x[n] + a₁x[n-1] + ... - b₁y[n-1] - b₂y[n-2] - ...`
+
+The feedforward part (a coefficients) depends on inputs; the feedback part (b coefficients) makes the system have memory (infinite impulse response).
+
+```bash filename="difference_equations.m" copy
+clear all; clc;
+
+% First-order system: y[n] = 0.4*x[n] + 0.6*y[n-1]
+% (This is like a low-pass filter with coefficient 0.6)
+
+x = [1, 0, 0, 0, 0, 0, 0, 0, 0, 0];  % Impulse input
+
+y = zeros(1, 10);  % Initialize output
+a = 0.4;           % Feedforward coefficient
+b = 0.6;           % Feedback coefficient
+
+% Compute output sample by sample
+for n = 1:length(x)
+    y(n) = a * x(n);  % Feedforward term
+    if n > 1
+        y(n) = y(n) + b * y(n-1);  % Feedback term
+    end
+end
+
+disp(['Input (impulse): ', num2str(x)]);
+disp(['Output: ', num2str(y)]);
+
+% Verify with theoretical impulse response
+% For y[n] = a*x[n] + b*y[n-1], the impulse response is h[n] = a*b^n
+h_theoretical = a * (b .^ (0:9));
+disp(['Theoretical h[n]: ', num2str(h_theoretical)]);
+
+figure;
+stem(0:9, y, 'b', 'filled', 'LineWidth', 2, 'DisplayName', 'Computed');
+hold on;
+stem(0:9, h_theoretical, 'r--', 'LineWidth', 2, 'DisplayName', 'Theoretical');
+hold off;
+xlabel('Sample n');
+ylabel('Amplitude');
+title(['Impulse Response: y[n] = ', num2str(a), '·x[n] + ', num2str(b), '·y[n-1]']);
+legend;
+grid on;
+```
+
+**Explanation**: The loop processes the difference equation sample by sample. For `n=1` (first sample), `y(1) = 0.4 * 1 = 0.4` (no feedback). For `n=2`, `y(2) = 0.4 * 0 + 0.6 * 0.4 = 0.24`. The feedback coefficient 0.6 causes exponential decay, like a charge leaking from a capacitor. This is the foundation of **IIR filters**.

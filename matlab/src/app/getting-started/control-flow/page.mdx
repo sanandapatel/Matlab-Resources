@@ -1,0 +1,38 @@
+# Control Flow: if–elseif–else
+
+Conditional logic is essential for signal validation and branching in your DSP code.
+
+```bash filename="control-flow.m" copy
+clear all; clc;
+
+% Simple if-else
+signal_level = 2.5;
+
+if signal_level > 3.0
+    disp('Signal is high');
+elseif signal_level > 1.0
+    disp('Signal is medium');
+else
+    disp('Signal is low');
+end
+
+% Multiple conditions (AND: &&, OR: ||, NOT: ~)
+fs = 8000;           % Sampling frequency
+signal_duration = 2; % Seconds
+
+if fs >= 8000 && signal_duration <= 10
+    disp('Sampling rate is adequate for this duration');
+end
+
+% Practical DSP example: validate signal before processing
+max_amplitude = max(abs([0.5, -1.2, 0.8, 1.5])); % Find peak
+
+if max_amplitude > 1.0
+    warning('Signal clipping detected!');
+    normalized_signal = [0.5, -1.2, 0.8, 1.5] / max_amplitude;
+else
+    normalized_signal = [0.5, -1.2, 0.8, 1.5];
+end
+```
+
+**Explanation**: The `if` block executes if the condition is true. Use `&&` (AND) for multiple conditions that must all be true, `||` (OR) if any condition must be true. The `~` operator means NOT. In DSP, you frequently check if a signal is within expected bounds before filtering.

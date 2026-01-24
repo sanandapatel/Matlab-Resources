@@ -1,0 +1,51 @@
+# DTFT (Discrete-Time Fourier Transform)
+
+**Mathematical Definition**: `X(e^(jω)) = Σ x[n]e^(-jωn)`
+
+The DTFT decomposes a signal into complex exponentials at frequencies ω ∈ [0, 2π].
+
+**CRITICAL**: The DTFT is continuous in frequency. You can't compute it directly for all frequencies; instead, we evaluate it at specific points.
+
+```bash filename="dtft.m" copy
+clear all; clc;
+
+% Simple signal: two sine waves
+fs = 1000;  % 1 kHz sampling
+t = 0:1/fs:0.5;  % 0.5 seconds
+x = sin(2*pi*50*t) + 0.5*sin(2*pi*150*t);
+
+% Compute DTFT at specific frequencies
+frequencies = 0:1:300;  % Hz
+omega = 2*pi*frequencies/fs;  % Convert to normalized angular frequency
+
+N = length(x);
+X_dtft = zeros(size(omega));
+
+for k = 1:length(omega)
+    % X(e^jω) = Σ x[n] * e^(-jωn)
+    X_dtft(k) = sum(x .* exp(-1j*omega(k)*(0:N-1)));
+end
+
+% Extract magnitude spectrum
+magnitude = abs(X_dtft);
+
+figure('Position', [100, 100, 1200, 400]);
+
+subplot(1, 2, 1);
+plot(t, x, 'b-', 'LineWidth', 1.5);
+xlabel('Time (s)');
+ylabel('Amplitude');
+title('Input Signal: 50 Hz + 150 Hz');
+grid on;
+xlim([0, 0.1]);  % Show first 100 ms
+
+subplot(1, 2, 2);
+plot(frequencies, magnitude, 'r-', 'LineWidth', 1.5);
+xlabel('Frequency (Hz)');
+ylabel('|X(e^{jω})|');
+title('DTFT Magnitude Spectrum');
+grid on;
+xlim([0, 300]);
+```
+
+**Explanation**: The loop evaluates the DTFT at each frequency. The term `exp(-1j*omega(k)*(0:N-1))` creates complex exponentials at that frequency for all `n`. The magnitude shows that peaks occur at `50 Hz` and `150 Hz`—exactly the frequencies in the input signal. The factor `N` scales the magnitude; normalizing by `1/N` would match power calculations.

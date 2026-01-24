@@ -1,0 +1,46 @@
+# FFT (Fast Fourier Transform)
+
+The FFT is not a new transform; it's an efficient algorithm for computing the DFT. MATLAB's `fft` automatically optimizes for best speed.
+
+**Key insight**: FFT is fastest when `N` is a power of 2 (`N = 2^k`). If your signal length isn't a power of 2, you might pad with zeros.
+
+```bash filename="fft_demo.m" copy
+clear all; clc;
+
+% Signal with non-power-of-2 length
+x = sin(2*pi*[0:1000]/1000);  % 1001 samples
+
+% Compute FFT without padding
+X_padded = fft(x);  % MATLAB pads automatically for efficiency
+
+% Better: explicitly pad to next power of 2
+N_next_power = 2^nextpow2(length(x));  % 1024
+x_padded = [x, zeros(1, N_next_power - length(x))];
+X_padded_explicit = fft(x_padded);
+
+% Time both methods
+tic;
+for iter = 1:1000
+    X_test = fft(x);
+end
+time_unpadded = toc;
+
+tic;
+for iter = 1:1000
+    X_test = fft(x_padded);
+end
+time_padded = toc;
+
+disp(['FFT of ', num2str(length(x)), ' samples: ', num2str(time_unpadded), ' s']);
+disp(['FFT of ', num2str(N_next_power), ' samples (padded): ', num2str(time_padded), ' s']);
+disp(['Speedup: ', num2str(time_unpadded/time_padded), 'x']);
+
+% Frequency resolution improves with padding
+fs = 1000;
+freq_resolution_original = fs / length(x);
+freq_resolution_padded = fs / N_next_power;
+disp(['Frequency resolution (original): ', num2str(freq_resolution_original), ' Hz']);
+disp(['Frequency resolution (padded): ', num2str(freq_resolution_padded), ' Hz']);
+```
+
+**Explanation**: Padding with zeros increases frequency resolution (frequency bins become finer) without changing the signal. The FFT is fastest with power-of-2 lengths. `nextpow2` finds the next power of 2 greater than the input length. Padding doesn't add information, but it makes the frequency spacing finer and the computation slightly faster.

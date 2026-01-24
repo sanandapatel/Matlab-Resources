@@ -1,0 +1,42 @@
+# Unit Step
+
+**Mathematical Definition**: The Heaviside step function `u[n]`
+- `u[n] = 1` for `n ≥ 0`
+- `u[n] = 0` for `n < 0`
+
+```bash filename="unit_step.m" copy
+clear all; clc;
+
+N = 20;
+n = 0:N-1;
+
+% Unit step starting at n=0
+step = ones(1, N);
+step(1:0) = [];  % No need to remove anything; this is a no-op
+% Cleaner way:
+step = n >= 0;   % Logical array: true (1) for all n≥0
+
+% Unit step delayed to n=5
+n_full = -5:15;
+step_delayed = n_full >= 5;
+
+figure('Position', [100, 100, 1200, 400]);
+
+subplot(1, 2, 1);
+stem(0:N-1, step, 'b', 'filled', 'LineWidth', 2);
+xlabel('Sample Index n');
+ylabel('Amplitude');
+title('Unit Step u[n]');
+grid on;
+ylim([-0.5, 1.5]);
+
+subplot(1, 2, 2);
+stem(n_full, step_delayed, 'r', 'filled', 'LineWidth', 2);
+xlabel('Sample Index n');
+ylabel('Amplitude');
+title('Delayed Step u[n-5]');
+grid on;
+ylim([-0.5, 1.5]);
+```
+
+**Explanation**: `n >= 0` creates a logical array (1s and 0s). This mimics the mathematical definition: the step is 1 from this point onward. The step signal models "turning on" a system at time n=0.

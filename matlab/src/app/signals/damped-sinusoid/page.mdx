@@ -1,0 +1,36 @@
+# Damped Sinusoid
+
+**Mathematical Definition**: `x[n] = A·e^(-ζωn/fs)·sin(2πfn/fs + φ)`
+
+Damped sinusoids combine exponential decay with oscillation—models realistic vibrations, transients, antenna responses.
+
+```bash filename="damped_sinusoid.m" copy
+clear all; clc;
+
+fs = 1000;             % 1 kHz sampling
+duration = 0.5;        % 0.5 seconds
+t = 0:1/fs:duration-1/fs;
+
+f = 50;                % Oscillation frequency: 50 Hz
+A = 1;                 % Initial amplitude
+decay_rate = 3;        % Decay time constant (per second)
+
+% Damped sinusoid
+envelope = A * exp(-decay_rate * t);  % Exponential decay envelope
+x_damped = envelope .* sin(2*pi*f*t);  % Element-wise multiply for modulation
+
+figure;
+plot(t, x_damped, 'b-', 'LineWidth', 1.5, 'DisplayName', 'Damped sinusoid');
+hold on;
+plot(t, envelope, 'r--', 'LineWidth', 2, 'DisplayName', 'Decay envelope');
+plot(t, -envelope, 'r--', 'LineWidth', 2, 'HandleVisibility', 'off');
+hold off;
+
+xlabel('Time (s)');
+ylabel('Amplitude');
+title('Damped Sinusoid: A·e^{-ζt}·sin(2πft)');
+legend;
+grid on;
+```
+
+**Explanation**: The element-wise multiplication `envelope .* sin(...)` multiplies each sample of the sine wave by the corresponding envelope value. The result oscillates but with decreasing amplitude—realistic for vibrations, electromagnetic pulses, etc. The dotted line shows the exponential envelope that bounds the oscillation.

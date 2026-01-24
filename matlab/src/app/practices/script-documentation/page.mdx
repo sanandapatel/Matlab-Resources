@@ -1,0 +1,58 @@
+# Script Naming and Documentation
+
+```bash filename="compute_rms_and_thd.m" copy
+% Purpose: Calculate RMS voltage and Total Harmonic Distortion (THD)
+% Author: Your Name
+% Date: Jan 2026
+% Last Modified: Jan 16, 2026
+%
+% Inputs:
+%   signal (vector): Sampled voltage waveform
+%   fs (scalar): Sampling frequency in Hz
+%
+% Outputs:
+%   rms_value (scalar): RMS voltage
+%   thd_percent (scalar): THD as percentage
+%   harmonic_magnitudes (vector): Magnitude of harmonics
+%
+% Example:
+%   [rms, thd, harmonics] = compute_rms_and_thd(signal, 8000);
+
+function [rms_value, thd_percent, harmonic_magnitudes] = compute_rms_and_thd(signal, fs)
+
+    % Input validation
+    if length(signal) < 100
+        warning('Signal very short; THD calculation may be inaccurate');
+    end
+
+    % Compute RMS
+    rms_value = sqrt(mean(signal.^2));
+
+    % Compute FFT
+    X = fft(signal);
+    freq = (0:length(signal)-1) * fs / length(signal);
+    magnitude = 2*abs(X(1:length(X)/2)) / length(signal);
+
+    % Find fundamental and harmonics
+    % Assume fundamental at the first significant peak
+    [~, f1_idx] = max(magnitude(2:end));  % Skip DC
+    f1_idx = f1_idx + 1;
+
+    % Extract harmonic magnitudes (up to 10th harmonic)
+    harmonic_magnitudes = zeros(10, 1);
+    for k = 1:10
+        target_freq = k * freq(f1_idx);
+        [~, idx] = min(abs(freq - target_freq));
+        if idx <= length(magnitude)
+            harmonic_magnitudes(k) = magnitude(idx);
+        end
+    end
+
+    % Compute THD
+    fundamental = harmonic_magnitudes(1);
+    higher_harmonics = harmonic_magnitudes(2:end);
+    thd_percent = 100 * sqrt(sum(higher_harmonics.^2)) / fundamental;
+end
+```
+
+**Explanation**: Every function needs a header comment describing purpose, inputs, outputs, and example usage. Input validation prevents silent errors. This style is industry-standard and helps collaborators (and future you) understand the code instantly.

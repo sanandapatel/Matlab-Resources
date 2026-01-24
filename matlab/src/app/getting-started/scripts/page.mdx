@@ -1,0 +1,48 @@
+# Scripts vs Functions vs Live Scripts
+
+### Scripts (.m files)
+A script is a plain text file containing MATLAB commands that execute sequentially. Scripts have no input/output specification—they use variables in the workspace directly.
+
+```bash filename="basic_sine_wave.m" copy
+% This script generates and plots a simple sine wave
+
+fs = 8000;           % Sampling frequency in Hz
+t = 0:1/fs:1;        % Time vector: 0 to 1 second, sampled at fs
+f = 440;             % Frequency of sine wave (A4 note)
+x = sin(2*pi*f*t);   % Generate sine wave
+
+plot(t, x);
+xlabel('Time (s)');
+ylabel('Amplitude');
+title('440 Hz Sine Wave');
+grid on;
+```
+
+**Explanation**: `fs` defines how many samples per second (8000 samples/sec). The colon operator `0:1/fs:1` creates a time vector starting at 0, incrementing by 1/8000, ending at 1 second. `sin(2*pi*f*t)` computes the sine wave mathematically. The multiplication operator `*` here performs scalar multiplication across the entire vector.
+
+### Functions (.m files with function declaration)
+A function is a reusable block of code with inputs and outputs. Functions are essential for DSP because you'll apply the same operation repeatedly.
+
+```bash filename="generate_sine_wave.m" copy
+function [x, t] = generate_sine_wave(fs, duration, frequency)
+    % Function: generate_sine_wave
+    % Input:  fs (sampling frequency), duration (seconds), frequency (Hz)
+    % Output: x (signal samples), t (time vector)
+    
+    t = 0:1/fs:duration-1/fs;  % Time vector from 0 to duration-1/fs
+    x = sin(2*pi*frequency*t);  % Compute sine wave samples
+end
+```
+
+**How to use this function**:
+```bash filename="generate_sine_wave.m" copy
+% In a script or Command Window
+[signal, time_vector] = generate_sine_wave(8000, 2, 440);
+% signal contains 16000 samples (8000 samples/sec × 2 seconds)
+% time_vector contains the corresponding time values
+```
+
+**Explanation**: The function declaration `function [x, t] = generate_sine_wave(fs, duration, frequency)` tells MATLAB this function produces two outputs (`x, t`) and takes three inputs. Inside, we compute the time vector and signal. When you call the function, MATLAB returns these values.
+
+### Live Scripts (.mlx files)
+Live Scripts combine code, output, and formatted text in one interactive document. Perfect for learning because you see results immediately. However, for professional DSP work, regular scripts are more common.

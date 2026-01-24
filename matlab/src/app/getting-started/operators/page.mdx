@@ -1,0 +1,40 @@
+# Operators: Standard vs Element-Wise
+
+One of the most common beginner mistakes is confusing `*` with `.*`.
+
+```bash filename="operators.m" copy
+clear all; clc;
+
+% Scalar multiplication (both do the same thing)
+x = [1, 2, 3];
+y1 = 2 * x;      % [2, 4, 6] — scalar times vector
+y2 = x .* 2;     % [2, 4, 6] — same result (order doesn't matter)
+
+% Vector multiplication: matrix operation vs element-wise
+a = [1, 2, 3];
+b = [4, 5, 6];
+
+% a * b' is matrix multiplication (results in scalar—dot product)
+result1 = a * b';  % 1×3 × 3×1 = scalar = 32
+
+% a .* b is element-wise multiplication (results in vector)
+result2 = a .* b;  % [1×4, 2×5, 3×6] = [4, 10, 18]
+
+% Division operations
+dividend = [10, 20, 30];
+
+result3 = dividend / 2;      % [5, 10, 15] — scalar division
+result4 = dividend ./ 2;     % [5, 10, 15] — element-wise (same for scalars)
+
+% Element-wise power
+x = [1, 2, 3];
+y1 = x .^ 2;     % [1, 4, 9] — each element squared
+y2 = x ^ 2;      % ERROR for non-square vectors; only for square matrices
+
+% These operations are essential in DSP when processing signals
+frequency = [100, 200, 300];  % Hz
+magnitude = [0.5, 0.3, 0.1];
+power = magnitude .^ 2;       % Power in each frequency bin
+```
+
+**Explanation**: The dot (`.`) in `.*, ./, .^` means "element-wise." Without it, MATLAB tries to interpret as a matrix operation, which fails for non-square dimensions. In DSP, you almost always use element-wise operations on signal vectors.

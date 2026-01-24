@@ -1,0 +1,65 @@
+# Common Beginner Mistakes and Debugging
+
+### Mistake 1
+Forgetting the Dot in Element-Wise Operations
+
+```bash filename="file.m" copy
+% WRONG
+x = [1, 2, 3];
+y = [4, 5, 6];
+result = x * y;  % ERROR: Dimensions don't match for matrix multiplication
+
+% CORRECT
+result = x .* y;  % Element-wise: [4, 10, 18]
+```
+
+### Mistake 2
+Using Wrong Indexing
+
+```bash filename="file.m" copy
+% WRONG
+signal = [10, 20, 30];
+first = signal(0);  % ERROR: MATLAB uses 1-based indexing
+
+% CORRECT
+first = signal(1);  % Returns 10
+```
+
+### Mistake 3
+Dimension Mismatch in Operations
+
+```bash filename="file.m" copy
+% WRONG
+time = 0:0.01:1;      % 101 samples (row vector)
+freq = [100, 200];    % 2 frequencies (row vector)
+x = sin(2*pi*freq*time);  % ERROR: (1×2) × (1×101) incompatible
+
+% CORRECT
+freq = [100; 200];    % Column vector (2×1)
+x = sin(2*pi*freq*time);  % (2×1) × (1×101) = (2×101) — each row is a signal
+```
+
+### Debugging Tools
+
+```bash filename="file.m" copy
+% Use disp to print intermediate values
+x = [1, 2, 3];
+disp(['x = ', num2str(x)]);  % Shows: x = 1     2     3
+
+% Check variable size and type
+whos x;  % Shows size, type, and memory
+
+% Use keyboard to pause execution and inspect variables
+% (uncomment next line during debugging)
+% keyboard;  % MATLAB pauses here; type variable names in Command Window
+
+% Check for NaN (Not a Number) and Inf
+result = sqrt(-1);  % NaN warning
+filtered = result / 0;  % Inf
+
+any_nan = any(isnan(result));  % Check if any NaN
+any_inf = any(isinf(filtered));  % Check if any Inf
+```
+
+#### Explanation
+`disp` prints values for inspection. `whos` shows variable details. `keyboard` halts execution, letting you examine variables interactively. `isnan` and `isinf` detect numerical problems. In DSP, you'll check for NaN (from invalid operations) and Inf (from division by zero).

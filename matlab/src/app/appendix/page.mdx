@@ -1,0 +1,44 @@
+# APPENDIX: QUICK REFERENCE COMMANDS
+
+### Signal Generation
+```bash filename="signal.m" copy
+t = 0:1/fs:duration-1/fs;           % Time vector
+x = A*sin(2*pi*f*t + phase);        % Sine wave
+x = A*cos(2*pi*f*t + phase);        % Cosine wave
+x = A*exp(-decay*t).*sin(2*pi*f*t); % Damped sinusoid
+x = chirp(t, f1, t_end, f2);        % Frequency sweep
+x = randn(size(t));                 % White Gaussian noise
+```
+
+### Plotting
+```bash filename="signal.m" copy
+plot(t, x);                         % Continuous time signal
+stem(n, x);                         % Discrete-time signal
+subplot(rows, cols, index);         % Create subplot
+hold on; hold off;                  % Overlay plots
+legend, xlabel, ylabel, title, grid; % Labels
+```
+
+### Filtering
+```bash filename="signal.m" copy
+[b, a] = butter(order, Wn);        % Butterworth design
+[b, a] = cheby1(order, Rp, Wn);    % Chebyshev Type I
+b = fir1(order, Wn);               % FIR design
+y = filter(b, a, x);               % Apply filter (causal)
+y = filtfilt(b, a, x);             % Zero-phase filter
+```
+
+### Frequency Analysis
+```bash filename="signal.m" copy
+X = fft(x);                             % Fast Fourier Transform
+[Pxx, f] = periodogram(x, [], [], fs);  % Power spectral density
+[H, f] = freqz(b, a, [], fs);           % Frequency response
+```
+
+### Statistics
+```bash filename="signal.m" copy
+rms(x);                            % RMS value
+mean(x);                           % Mean
+std(x);                            % Standard deviation
+max(x), min(x);                    % Maximum, minimum
+```

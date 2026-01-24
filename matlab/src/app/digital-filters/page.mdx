@@ -1,0 +1,13 @@
+# Why Digital Filters?
+
+Filters separate useful signal from noise. They're essential in:
+
+- Audio/music: equalizers, effect processing
+- RF/wireless: channel selection, interference rejection
+- Medical: ECG noise removal, EEG artifact suppression
+- Instrumentation: sensor data smoothing
+
+Two types:
+
+- **FIR (Finite Impulse Response)**: Impulse response `h[n]` has finite length. Always stable, can have linear phase.
+- **IIR (Infinite Impulse Response)**: Uses feedback, impulse response decays over time. More efficient but requires stability checks.

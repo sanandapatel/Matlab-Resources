@@ -1,0 +1,37 @@
+# Debugging Techniques
+
+### Use `disp` and `num2str` for intermediate inspection
+```bash filename="debugging.m" copy
+signal = sin(2*pi*100*(0:99)/1000);
+disp(['Signal length: ', num2str(length(signal))]);
+disp(['Signal range: [', num2str(min(signal)), ', ', num2str(max(signal)), ']']);
+```
+
+### Use `assert` for conditions that must hold
+```bash filename="debugging.m" copy
+filtered = filter([1, 2], [1], signal);
+assert(length(filtered) == length(signal), 'Filtered signal length mismatch');
+```
+
+### Temporary plots for inspection
+```bash filename="debugging.m" copy
+figure;
+plot(signal, 'b-'); title('Checkpoint 1: Raw Signal');
+figure;
+plot(filtered, 'r-'); title('Checkpoint 2: Filtered');
+```
+
+### Save intermediate results
+```bash filename="debugging.m" copy
+save('debug_checkpoint.mat', 'signal', 'filtered');
+% Later, load('debug_checkpoint.mat') to inspect
+```
+
+### Use `try-catch` for error handling
+```bash filename="debugging.m" copy
+    X = fft(signal);
+catch ME
+    disp(['Error during FFT: ', ME.message]);
+    return;  % Exit function gracefully
+end
+```

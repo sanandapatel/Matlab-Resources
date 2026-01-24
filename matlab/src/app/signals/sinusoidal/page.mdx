@@ -1,0 +1,50 @@
+# Sinusoidal Signals
+
+**Mathematical Definition**: `x[n] = A·sin(2πfn/fs + φ)`
+
+This is the most important signal in DSP. All real-world signals are decomposed into sinusoids via Fourier analysis.
+
+```bash filename="sinusoidal.m" copy
+clear all; clc;
+
+fs = 8000;             % Sampling frequency: 8 kHz
+duration = 0.05;       % Duration: 50 ms
+t = 0:1/fs:duration-1/fs;  % Time vector
+
+% Basic sine wave
+f = 440;               % Frequency: 440 Hz (A note)
+A = 1;                 % Amplitude
+x_sin = A * sin(2*pi*f*t);
+
+% Cosine wave (phase shifted by 90 degrees)
+x_cos = A * cos(2*pi*f*t);
+
+% Sine with phase shift
+phase = pi/4;          % 45 degrees
+x_phase = A * sin(2*pi*f*t + phase);
+
+figure('Position', [100, 100, 1200, 600]);
+
+subplot(3, 1, 1);
+plot(t, x_sin, 'b-', 'LineWidth', 2);
+xlabel('Time (s)');
+ylabel('Amplitude');
+title('Sine Wave: x[n] = sin(2π·440·n/8000)');
+grid on;
+
+subplot(3, 1, 2);
+plot(t, x_cos, 'r-', 'LineWidth', 2);
+xlabel('Time (s)');
+ylabel('Amplitude');
+title('Cosine Wave: x[n] = cos(2π·440·n/8000)');
+grid on;
+
+subplot(3, 1, 3);
+plot(t, x_phase, 'g-', 'LineWidth', 2);
+xlabel('Time (s)');
+ylabel('Amplitude');
+title(['Phase-Shifted Sine: x[n] = sin(2π·440·n/8000 + π/4)']);
+grid on;
+```
+
+**Explanation**: The argument to `sin` must be in radians. `2*pi*f*t` gives the phase in radians. `f` is frequency in Hz, `fs` is sampling rate. Cosine is sine shifted by 90°. Adding a phase constant shifts the entire waveform left or right. Phase is crucial in signal processing—two signals at the same frequency but different phases behave very differently in a system.

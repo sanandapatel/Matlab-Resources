@@ -1,0 +1,49 @@
+# FIR Filters: Moving Average (Simplest Filter)
+
+A moving average filter smooths by averaging consecutive samples.
+
+```bash filename="moving_average.m" copy
+clear all; clc;
+
+% Noisy signal
+fs = 1000;
+t = 0:1/fs:1;
+signal = sin(2*pi*10*t);
+noise = 0.5*randn(size(t));
+x_noisy = signal + noise;
+
+% Moving average filter (kernel size 5)
+filter_length = 5;
+h_moving_avg = ones(1, filter_length) / filter_length;
+
+% Apply filter
+y_filtered = conv(x_noisy, h_moving_avg, 'same');
+% 'same' returns output same length as input
+
+figure('Position', [100, 100, 1200, 500]);
+
+subplot(2, 1, 1);
+plot(t, x_noisy, 'b-', 'LineWidth', 0.5, 'DisplayName', 'Noisy signal');
+hold on;
+plot(t, y_filtered, 'r-', 'LineWidth', 2, 'DisplayName', 'Filtered (MA)');
+hold off;
+xlabel('Time (s)');
+ylabel('Amplitude');
+title('Moving Average Filter: Kernel Size = 5');
+legend;
+grid on;
+xlim([0, 0.3]);
+
+% Frequency response
+[h_freq, f_freq] = freqz(h_moving_avg, 1, 1024, fs);
+subplot(2, 1, 2);
+plot(f_freq, 20*log10(abs(h_freq)+1e-10), 'b-', 'LineWidth', 2);
+xlabel('Frequency (Hz)');
+ylabel('Magnitude (dB)');
+title('Moving Average Filter Frequency Response');
+grid on;
+xlim([0, 500]);
+ylim([-40, 5]);
+```
+
+**Explanation**: The moving average filter `h = [0.2, 0.2, 0.2, 0.2, 0.2]` (normalized) smooths by replacing each sample with the average of itself and neighbors. `conv(..., 'same')` returns output the same length as input (edge-handling). The frequency response shows that low frequencies pass (`magnitude ≈ 0 dB`) while high frequencies are attenuated, making it a low-pass filter.

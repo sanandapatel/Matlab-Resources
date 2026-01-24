@@ -1,0 +1,61 @@
+# Common Beginner Errors (Recap + Solutions)
+
+### Forgetting element-wise operations
+```bash filename="common_errors.m" copy
+x = [1, 2, 3];
+y = x ^ 2;  % ERROR: Non-square matrix to a power
+
+% SOLUTION: Use .^
+y = x .^ 2;  % [1, 4, 9]
+```
+
+### Dimension mismatch in concatenation
+```bash filename="common_errors.m" copy
+a = [1, 2, 3];  % Row vector (1x3)
+b = [4; 5; 6];  % Column vector (3x1)
+c = [a; b];     % ERROR: Dimension mismatch
+
+% SOLUTION: Ensure matching dimensions
+c = [a, b'];    % Row concatenation
+% or
+c = [a'; b];    % Column concatenation
+```
+
+### Index out of bounds
+```bash filename="common_errors.m" copy
+signal = [10, 20, 30];
+value = signal(4);  % ERROR: Only 3 elements
+
+% SOLUTION: Check array length first
+if length(signal) >= 4
+    value = signal(4);
+else
+    value = signal(end);
+end
+```
+
+### NaN or Inf propagation
+```bash filename="common_errors.m" copy
+x = [1, 2, 0];
+result = log(x./x);  % x/x = [1, 1, NaN], log gives NaN
+
+% SOLUTION: Check for invalid operations
+safe_result = zeros(size(x));
+for n = 1:length(x)
+    if x(n) ~= 0
+        safe_result(n) = log(x(n)/x(n));
+    end
+end
+```
+
+### Checking filter stability
+```bash filename="common_errors.m" copy
+b = [1, 2, 3];
+a = [1, 0.5, -1.5];  % Feedback coefficient -1.5 -> unstable
+
+% SOLUTION: Check pole locations
+poles = roots(a);
+if any(abs(poles) >= 1)
+    warning('Filter is unstable!');
+end
+```

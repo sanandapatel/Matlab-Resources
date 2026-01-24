@@ -1,0 +1,59 @@
+# Advanced Filters: High-Pass, Band-Pass, Notch
+
+```bash filename="advanced_filters.m" copy
+clear all; clc;
+
+fs = 1000;
+t = 0:1/fs:1;
+
+% Prototype signal: mix of 50 Hz, 150 Hz, and 300 Hz
+x = sin(2*pi*50*t) + sin(2*pi*150*t) + sin(2*pi*300*t) + 0.3*randn(size(t));
+
+% Design different filters
+[b_lp, a_lp] = butter(5, 120/(fs/2), 'low');      % Low-pass: < 120 Hz
+[b_hp, a_hp] = butter(5, 120/(fs/2), 'high');     % High-pass: > 120 Hz
+[b_bp, a_bp] = butter(5, [100, 200]/(fs/2), 'bandpass');  % Band-pass: 100–200 Hz
+
+% 50 Hz notch filter (power-line interference)
+Wo = 50/(fs/2);
+BW = 5/(fs/2);  % Bandwidth: 5 Hz
+[b_notch, a_notch] = iirnotch(Wo, BW);
+
+figure('Position', [100, 100, 1200, 600]);
+
+% Original spectrum
+X_orig = abs(fft(x));
+freq = (0:length(t)-1)*fs/length(t);
+
+subplot(2, 3, 1);
+semilogy(freq(1:length(freq)/2), X_orig(1:length(X_orig)/2), 'k-', 'LineWidth', 2);
+xlabel('Frequency (Hz)');
+ylabel('Magnitude');
+title('Original: 50 + 150 + 300 Hz');
+grid on;
+xlim([0, 400]);
+
+% Apply and plot each filter
+filters = {b_lp, a_lp; b_hp, a_hp; b_bp, a_bp; b_notch, a_notch};
+titles = {'Low-pass (< 120 Hz)', 'High-pass (> 120 Hz)', 'Band-pass (100–200 Hz)', 'Notch (50 Hz removed)'};
+
+for idx = 1:4
+    b = filters{idx, 1};
+    a = filters{idx, 2};
+    y = filter(b, a, x);
+    Y = abs(fft(y));
+
+    subplot(2, 3, idx + 1);
+    semilogy(freq(1:length(freq)/2), Y(1:length(Y)/2), 'b-', 'LineWidth', 2);
+    xlabel('Frequency (Hz)');
+    ylabel('Magnitude');
+    title(titles{idx});
+    grid on;
+    xlim([0, 400]);
+    ylim([1, 1000]);
+end
+
+sgtitle('Filter Selectivity: Low-Pass, High-Pass, Band-Pass, Notch');
+```
+
+**Explanation**: Each filter type selects a band of frequencies. Low-pass removes high frequencies (noise, interference). High-pass removes DC and low-frequency drift. Band-pass isolates a specific frequency range. The notch filter is specialized: it removes a specific frequency (`50 Hz` power-line hum) while preserving adjacent frequencies. `iirnotch` creates a narrow, deep notch—essential in RF and biomedical applications.

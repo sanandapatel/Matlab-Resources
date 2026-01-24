@@ -1,0 +1,50 @@
+# Circular Convolution (frequency-domain cycling)
+
+When signals are periodic (as in the DFT), convolution becomes circular convolution. MATLAB's `cconv` function computes this.
+
+```bash filename="circular_convolution.m" copy
+clear all; clc;
+
+% Periodic input signal (2 periods of a pattern)
+x = [1, 0, 1, 0];
+
+% Short filter
+h = [1, 0.5];
+
+% Linear convolution (usual result)
+y_linear = conv(x, h);
+
+% Circular convolution (for periodic signals)
+N = length(x);
+y_circular = cconv(x, h, N);  % Last argument: length of circular convolution
+
+disp('Input x[n] (periodic):');
+disp(x);
+disp('Filter h[n]:');
+disp(h);
+disp('Linear convolution result:');
+disp(y_linear);
+disp(['(length: ', num2str(length(y_linear)), ')']);
+disp('Circular convolution result (period 4):');
+disp(y_circular);
+disp(['(length: ', num2str(length(y_circular)), ')']);
+
+% Visualization
+figure('Position', [100, 100, 1200, 400]);
+
+subplot(1, 2, 1);
+stem(0:length(y_linear)-1, y_linear, 'b', 'filled');
+xlabel('Sample n');
+ylabel('Amplitude');
+title('Linear Convolution');
+grid on;
+
+subplot(1, 2, 2);
+stem(0:length(y_circular)-1, y_circular, 'r', 'filled');
+xlabel('Sample n');
+ylabel('Amplitude');
+title('Circular Convolution (N=4)');
+grid on;
+```
+
+**Explanation**: Circular convolution "wraps around"—samples that would fall off the end wrap back to the beginning. This happens when you use FFT-based filtering on finite-length signals. It's efficient but can cause artifacts if not managed carefully (hence overlap-add and overlap-save methods).

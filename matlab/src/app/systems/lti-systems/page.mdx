@@ -1,0 +1,47 @@
+# LTI Systems and the Impulse Response
+
+An **LTI (Linear Time-Invariant) system** has two critical properties:
+- **Linearity**: If input `x₁` produces output `y₁` and input `x₂` produces output `y₂`, then input `ax₁ + bx₂` produces output `ay₁ + by₂`.
+- **Time-Invariance**: If `x[n]` produces `y[n]`, then `x[n-k]` produces `y[n-k]`.
+
+The **impulse response h[n]** is the output when the input is `δ[n]`. Everything about the system is encoded in `h[n]`.
+
+```bash filename="lti_systems.m" copy
+clear all; clc;
+
+% Define a simple LTI system's impulse response
+% h[n] = 0.5 * δ[n] + 0.3 * δ[n-1] + 0.1 * δ[n-2]
+% (This represents: output = 0.5*input[n] + 0.3*input[n-1] + 0.1*input[n-2])
+
+h = [0.5, 0.3, 0.1];  % Impulse response coefficients
+
+% Test 1: Input is impulse δ[n]
+impulse_in = [1, 0, 0, 0, 0];
+output_impulse = conv(impulse_in, h);  % Convolution
+disp('Input: δ[n]');
+disp(['Output: ', num2str(output_impulse)]);
+
+% Test 2: Input is step u[n]
+step_in = ones(1, 10);
+output_step = conv(step_in, h);
+disp('Input: u[n] (10 samples)');
+disp(['Output length: ', num2str(length(output_step))]);
+
+figure('Position', [100, 100, 1200, 400]);
+
+subplot(1, 2, 1);
+stem(0:length(output_impulse)-1, output_impulse, 'b', 'filled');
+xlabel('Sample n');
+ylabel('Amplitude');
+title('System Response to Impulse');
+grid on;
+
+subplot(1, 2, 2);
+stem(0:length(output_step)-1, output_step, 'r', 'filled');
+xlabel('Sample n');
+ylabel('Amplitude');
+title('System Response to Step');
+grid on;
+```
+
+**Explanation**: `conv(x, h)` computes linear convolution—the fundamental operation in DSP. The impulse response h[n] = [0.5, 0.3, 0.1] means the output is a weighted sum of the input and its two previous values. When the input is an impulse, the output is exactly h[n]. When the input is a step, the output accumulates over time.

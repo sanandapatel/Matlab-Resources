@@ -1,0 +1,50 @@
+# Real-Time Plotting (Streaming Data)
+
+For DSP monitoring, update plots dynamically as data arrives.
+
+```bash filename="real_time_plot.m" copy
+clear all; clc;
+
+% Simulate streaming ADC data
+fs = 1000;
+duration = 5;
+total_samples = fs * duration;
+chunk_size = 100;  % Process 100 samples at a time (100 ms)
+
+% Pre-allocate and setup
+x_total = sin(2*pi*10*(0:total_samples-1)/fs) + 0.5*randn(1, total_samples);
+figure('Position', [100, 100, 1200, 500]);
+
+% Initialize plot
+h = plot(nan, nan, 'b-', 'LineWidth', 1.5);
+xlabel('Sample Index');
+ylabel('Amplitude');
+title('Real-Time Signal Display');
+grid on;
+ylim([-3, 3]);
+xlim([0, chunk_size*10]);
+
+% Streaming loop
+data_buffer = [];
+tic;
+for chunk_idx = 1:10
+    % Simulate new data arrival
+    new_chunk = x_total((chunk_idx-1)*chunk_size + 1 : chunk_idx*chunk_size);
+    data_buffer = [data_buffer, new_chunk];
+
+    % Update plot
+    set(h, 'XData', 1:length(data_buffer), 'YData', data_buffer);
+    xlim([max(1, length(data_buffer)-500), length(data_buffer)+50]);
+
+    % Force redraw
+    drawnow;
+
+    % Simulate processing delay
+    pause(0.1);
+end
+elapsed = toc;
+
+disp(['Processed ', num2str(length(data_buffer)), ' samples in ', num2str(elapsed, 2), ' seconds']);
+```
+
+**Explanation**: The streaming loop receives data in chunks, appends to a buffer, and updates the plot. `drawnow` forces MATLAB to redraw (otherwise it buffers plot commands). This pattern is essential for real-time monitoring of RF measurements, vibration analysis, or audio processing.

@@ -1,0 +1,14 @@
+# MATLAB as a DSP Laboratory
+
+Think of MATLAB not as a programming language but as a digital oscilloscope, spectrum analyzer, and signal generator combined:
+
+| Instrument         | MATLAB Equivalent                 | Function                                |
+| ------------------ | --------------------------------- | --------------------------------------- |
+| Oscilloscope       | `plot(t, signal)`                 | View waveforms                          |
+| Spectrum Analyzer  | `periodogram(x, [], [], fs)`      | Frequency analysis                      |
+| Function Generator | `sin(2*pi*f*t)`, `chirp(t, ...)`  | Create test signals                     |
+| Filter Designer    | `butter`, `fir1`                  | Design filters                          |
+| Digital Multimeter | `rms(signal)`, `max(abs(signal))` | Measure signal properties               |
+| Lock-in Amplifier  | `filter`, `pwelch`                | Extract signals at specific frequencies |
+
+Use this mindset: "What measurement would I make in the lab?" Then translate to MATLAB code.

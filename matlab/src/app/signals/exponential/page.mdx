@@ -1,0 +1,47 @@
+# Exponential Signals
+
+**Mathematical Definition**: `x[n] = a^n · u[n]`
+
+Exponential signals decay (`|a| < 1`) or grow (`|a| > 1`) exponentially.
+
+```bash filename="exponential.m" copy
+clear all; clc;
+
+N = 30;
+n = 0:N-1;
+
+% Decaying exponential
+a_decay = 0.9;
+decay_signal = a_decay .^ n;
+
+% Decaying, slightly faster
+a_decay2 = 0.7;
+decay_signal2 = a_decay2 .^ n;
+
+% Growing exponential
+a_grow = 1.1;
+grow_signal = a_grow .^ n;
+
+figure('Position', [100, 100, 1200, 400]);
+
+subplot(1, 2, 1);
+stem(n, decay_signal, 'b', 'filled', 'LineWidth', 1.5);
+hold on;
+stem(n, decay_signal2, 'r', 'filled', 'LineWidth', 1.5);
+hold off;
+xlabel('Sample Index n');
+ylabel('Amplitude');
+title('Decaying Exponentials: a^n, a < 1');
+legend('a = 0.9', 'a = 0.7');
+grid on;
+ylim([0, 1.2]);
+
+subplot(1, 2, 2);
+stem(n, grow_signal, 'g', 'filled', 'LineWidth', 1.5);
+xlabel('Sample Index n');
+ylabel('Amplitude');
+title('Growing Exponential: a^n, a > 1');
+grid on;
+```
+
+**Explanation**: The key is using element-wise power `.^`. For each n, we compute a^n. As n increases, if a < 1, the signal decays to zero; if a > 1, it grows. In practical DSP, decaying exponentials model damped vibrations, filter transients, etc.

@@ -1,0 +1,64 @@
+# FIR Filter Design: Window Method
+
+Design a low-pass filter by:
+
+1. Compute ideal impulse response
+2. Window it to finite length
+3. Check frequency response
+
+```bash filename="fir_design.m" copy
+clear all; clc;
+
+% Specifications
+fs = 1000;                % Sampling frequency
+Wn = 0.2;                % Normalized cutoff frequency (0 to 1, where 1 = fs/2)
+filter_order = 51;       % Odd length for linear phase
+
+% Method 1: fir1 (built-in design)
+b_fir = fir1(filter_order - 1, Wn, 'low', hanning(filter_order));
+
+% Method 2: Manual design from ideal response (educational)
+% Ideal low-pass: h_ideal[n] = 2*Wn*sinc(2*Wn*n)
+n = -(filter_order-1)/2:(filter_order-1)/2;
+h_ideal = 2*Wn*sinc(2*Wn*n);
+h_windowed = h_ideal .* hanning(filter_order)';
+
+figure('Position', [100, 100, 1200, 600]);
+
+% Impulse response
+subplot(2, 2, 1);
+stem(0:length(b_fir)-1, b_fir, 'b', 'filled');
+xlabel('Sample n');
+ylabel('Coefficient');
+title('FIR Filter Impulse Response (fir1 design)');
+grid on;
+
+% Ideal impulse response
+subplot(2, 2, 2);
+stem(n, h_windowed, 'r', 'filled');
+xlabel('Sample n');
+ylabel('Coefficient');
+title('Manual Design: Ideal LP + Hanning Window');
+grid on;
+
+% Frequency response (magnitude)
+[H_mag, f_resp] = freqz(b_fir, 1, 1024, fs);
+subplot(2, 2, 3);
+plot(f_resp, 20*log10(abs(H_mag)+1e-10), 'b-', 'LineWidth', 2);
+xlabel('Frequency (Hz)');
+ylabel('Magnitude (dB)');
+title('Magnitude Response');
+grid on;
+ylim([-60, 5]);
+
+% Phase response
+subplot(2, 2, 4);
+phase_resp = unwrap(angle(H_mag))*180/pi;
+plot(f_resp, phase_resp, 'r-', 'LineWidth', 2);
+xlabel('Frequency (Hz)');
+ylabel('Phase (degrees)');
+title('Phase Response (Linear = constant slope)');
+grid on;
+```
+
+**Explanation**: `fir1` is MATLAB's built-in FIR designer. It creates a linear-phase filter (symmetric `h[n]` ensures constant group delay). The frequency response shows the passband (`0–200 Hz, -3dB cutoff`) and stopband attenuation. Manual design using the ideal response and windowing teaches the underlying theory: `sinc` creates the ideal response, windowing tails it.

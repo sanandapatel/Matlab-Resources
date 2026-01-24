@@ -1,0 +1,46 @@
+# Reading Data from Files
+
+Real DSP work involves loading measured data, not synthetic signals.
+
+```bash filename="read_data.m" copy
+clear all; clc;
+
+% Create a sample CSV file for demonstration
+sample_data = [0:0.001:1; sin(2*pi*10*(0:0.001:1))]';
+filename = 'sensor_data.csv';
+writematrix(sample_data, filename);
+
+% Method 1: readmatrix (modern, recommended)
+data = readmatrix(filename);
+time_col = data(:, 1);
+signal_col = data(:, 2);
+
+disp(['Loaded ', num2str(length(signal_col)), ' samples']);
+disp(['Time range: ', num2str(time_col(1)), ' to ', num2str(time_col(end)), ' s']);
+
+% Method 2: readtable (if file has headers)
+writetable(table(time_col, signal_col, 'VariableNames', {'Time_s', 'Signal_V'}), 'sensor_data_headers.csv');
+data_table = readtable('sensor_data_headers.csv');
+signal_from_table = data_table.Signal_V;
+
+% Method 3: Load MATLAB's native format (.mat files, very fast)
+save('sensor_data.mat', 'time_col', 'signal_col');
+load('sensor_data.mat');
+disp('Loaded from .mat file');
+
+% Plot loaded data
+figure;
+plot(time_col, signal_col, 'b-', 'LineWidth', 1.5);
+xlabel('Time (s)');
+ylabel('Signal (V)');
+title('Loaded Data from File');
+grid on;
+xlim([0, 0.2]);
+
+% Clean up
+delete(filename);
+delete('sensor_data_headers.csv');
+delete('sensor_data.mat');
+```
+
+**Explanation**: `readmatrix` is the modern approach for CSV and Excel files. `readtable` preserves column names, useful for complex data. `.mat` files are MATLAB's native format—much faster for large data or multiple variables. Always verify loaded data with `whos` and plots before processing.

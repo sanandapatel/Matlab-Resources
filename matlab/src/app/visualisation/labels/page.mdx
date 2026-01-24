@@ -1,0 +1,32 @@
+# Labels, Titles, Legends, Grid
+
+```bash filename="labels.m" copy
+
+clear all; clc;
+
+fs = 8000;
+t = 0:1/fs:0.01;  % First 10 ms only
+
+% Generate two signals
+x1 = sin(2*pi*440*t);   % 440 Hz (A note)
+x2 = sin(2*pi*880*t);   % 880 Hz (A octave higher)
+
+figure;
+plot(t, x1, 'b-', 'LineWidth', 2, 'DisplayName', '440 Hz');
+hold on;  % Don't replace the plot; add to it
+plot(t, x2, 'r-', 'LineWidth', 2, 'DisplayName', '880 Hz');
+hold off;
+
+xlabel('Time (s)', 'FontSize', 12);
+ylabel('Amplitude', 'FontSize', 12);
+title('Two Sine Waves', 'FontSize', 14, 'FontWeight', 'bold');
+legend('Location', 'northeast');  % Legend from DisplayName
+grid on;
+xlim([0, 0.005]);  % Show first 5 ms
+
+% Save the figure
+savefig('two_sines.fig');  % MATLAB format
+saveas(gcf, 'two_sines.png');  % PNG format
+```
+
+**Explanation**: `hold on` keeps the previous plot and adds new lines. `DisplayName` labels each line for the legend. `legend` creates a box showing which color corresponds to which signal. `FontSize` and `FontWeight` control text appearance. `savefig` saves the figure for later, `saveas` exports as image.

@@ -1,0 +1,67 @@
+# Linear Convolution (time-domain filtering)
+
+Convolution is the mathematical operation underlying all digital filtering. It expresses how a signal `x[n]` is transformed by a system with impulse response `h[n]`:
+
+`y[n] = Σ h[k]·x[n-k]`
+
+```bash filename="linear_convolution.m" copy
+clear all; clc;
+
+% Input signal: two impulses
+x = [1, 0, 0, 1, 0, 0, 0];
+
+% Impulse response (a simple filter)
+h = [1, 0.5, 0.25];
+
+% Compute convolution
+y = conv(x, h);
+
+% Manual computation for understanding
+% y[0] = h[0]*x[0] = 1*1 = 1
+% y[1] = h[0]*x[1] + h[1]*x[0] = 1*0 + 0.5*1 = 0.5
+% y[2] = h[0]*x[2] + h[1]*x[1] + h[2]*x[0] = 1*0 + 0.5*0 + 0.25*1 = 0.25
+% y[3] = h[0]*x[3] + h[1]*x[2] + h[2]*x[1] = 1*1 + 0.5*0 + 0.25*0 = 1
+% ... and so on
+
+disp('Input x[n]:');
+disp(x);
+disp('Impulse response h[n]:');
+disp(h);
+disp('Output y[n] = conv(x, h):');
+disp(y);
+
+figure('Position', [100, 100, 1200, 600]);
+
+subplot(3, 1, 1);
+stem(0:length(x)-1, x, 'b', 'filled');
+xlabel('Sample n');
+ylabel('Amplitude');
+title('Input Signal x[n]');
+grid on;
+ylim([0, 1.2]);
+
+subplot(3, 1, 2);
+stem(0:length(h)-1, h, 'r', 'filled');
+xlabel('Sample n');
+ylabel('Amplitude');
+title('Impulse Response h[n] (Moving Average Filter)');
+grid on;
+ylim([0, 1.2]);
+
+subplot(3, 1, 3);
+stem(0:length(y)-1, y, 'g', 'filled');
+xlabel('Sample n');
+ylabel('Amplitude');
+title('Output y[n] = conv(x[n], h[n])');
+grid on;
+
+% Verify convolution properties
+sum_x = sum(x);
+sum_h = sum(h);
+sum_y = sum(y);
+disp(['Sum of input: ', num2str(sum_x)]);
+disp(['Sum of h: ', num2str(sum_h)]);
+disp(['Sum of output (should equal sum_x * sum_h): ', num2str(sum_y), ' vs expected ', num2str(sum_x*sum_h)]);
+```
+
+**Explanation**: Convolution slides the impulse response over the input and computes a weighted sum at each position. The output length is `len(x) + len(h) - 1`. The convolution distributes the impulses through the system's response, creating the output. This is filtering in its purest form.

@@ -1,0 +1,42 @@
+# Periodogram: Power Spectral Density
+
+The **periodogram** estimates the power at each frequency. For real signals, it's computed as `|DFT|²/N` (approximately, normalization varies).
+
+```bash filename="periodogram_demo.m" copy
+clear all; clc;
+
+% Noisy signal: two sine waves + white noise
+fs = 1000;
+t = 0:1/fs:10-1/fs;  % 10 seconds
+x = sin(2*pi*50*t) + 0.5*sin(2*pi*150*t) + 0.5*randn(size(t));
+
+% Compute periodogram
+[Pxx, f] = periodogram(x, [], [], fs);  % Last argument: sampling frequency
+
+% Plot
+figure('Position', [100, 100, 1200, 400]);
+
+subplot(1, 2, 1);
+plot(t, x, 'b-', 'LineWidth', 0.5);
+xlabel('Time (s)');
+ylabel('Amplitude');
+title('Noisy Signal: 50 Hz + 150 Hz + Noise');
+grid on;
+xlim([0, 2]);
+
+subplot(1, 2, 2);
+semilogy(f, Pxx, 'b-', 'LineWidth', 1.5);
+xlabel('Frequency (Hz)');
+ylabel('Power (V²/Hz)');
+title('Periodogram (Power Spectral Density)');
+grid on;
+xlim([0, 400]);
+
+% Find peaks
+[pxx_peaks, peak_locs] = findpeaks(Pxx, f, 'MinPeakHeight', 0.01, 'MinPeakDistance', 20);
+hold on;
+plot(peak_locs, pxx_peaks, 'ro', 'MarkerSize', 8);
+hold off;
+```
+
+**Explanation**: `periodogram` computes the power spectral density (PSD), showing power vs frequency. The `semilogy` (logarithmic y-axis) reveals both large and small components. Peaks at `50 Hz` and `150 Hz` show the signal content; the baseline is noise. The `findpeaks` function identifies spectral peaks automatically—useful for feature extraction.
