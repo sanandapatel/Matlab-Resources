@@ -19,7 +19,7 @@ const navbar = (
 )
 const footer = (
   <Footer>
-    MIT {new Date().getFullYear()} © DSP Booster with Matlab.
+    MIT {new Date().getFullYear()} © Matlab Handbook for DSP.
   </Footer>
 )
  
@@ -51,7 +51,8 @@ export default async function RootLayout({ children }) {
           banner={banner}
           navbar={navbar}
           pageMap={await getPageMap()}
-          docsRepositoryBase="https://github.com/sDaCoder/Matlab-Resources-DSP/tree/dev/matlab"
+          // docsRepositoryBase="https://github.com/sDaCoder/Matlab-Resources-DSP/tree/dev/matlab"
+          docsRepositoryBase="https://github.com/sanandapatel/Matlab-Resources/tree/main/matlab"
           footer={footer}
           search={<Search />}
           // ... Your additional layout options
