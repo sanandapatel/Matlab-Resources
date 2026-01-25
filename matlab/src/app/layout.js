@@ -2,19 +2,28 @@ import { Footer, Layout, Navbar } from 'nextra-theme-docs'
 import { Banner, Head, Search } from 'nextra/components'
 import { getPageMap } from 'nextra/page-map'
 import 'nextra-theme-docs/style.css'
- 
+import Logo from '../components/Logo'
+
 export const metadata = {
   // Define your metadata here
   // For more information on metadata API, see: https://nextjs.org/docs/app/building-your-application/optimizing/metadata
+  icons: {
+    icon: '/logo1.png',
+  },
 }
- 
-const banner = <Banner storageKey="some-key">DSP Booster with Matlab</Banner>
+
+const banner = <Banner storageKey="some-key">Boost your DSP skills with Matlab</Banner>
 const navbar = (
   <Navbar
     // logo={<b>DSP Booster with Matlab</b>}
-    logo={<b>Matlab Handbook for DSP</b>}
+    logo={
+      <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
+        <Logo />
+        <b>Matlab Handbook for DSP</b>
+      </div>
+    }
     projectLink="https://github.com/sanandapatel/Matlab-Resources"
-    // ... Your additional navbar options
+  // ... Your additional navbar options
   />
 )
 const footer = (
@@ -22,7 +31,7 @@ const footer = (
     MIT {new Date().getFullYear()} © Matlab Handbook for DSP.
   </Footer>
 )
- 
+
 export default async function RootLayout({ children }) {
   return (
     <html
@@ -34,7 +43,7 @@ export default async function RootLayout({ children }) {
       suppressHydrationWarning
     >
       <Head
-      // ... Your additional head options
+        // ... Your additional head options
         color={{
           hue: 300,
           saturation: 78,
@@ -55,7 +64,7 @@ export default async function RootLayout({ children }) {
           docsRepositoryBase="https://github.com/sanandapatel/Matlab-Resources/tree/main/matlab"
           footer={footer}
           search={<Search />}
-          // ... Your additional layout options
+        // ... Your additional layout options
         >
           {children}
         </Layout>
