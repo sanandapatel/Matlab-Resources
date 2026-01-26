@@ -27,8 +27,18 @@ const navbar = (
   />
 )
 const footer = (
-  <Footer>
-    MIT {new Date().getFullYear()} © Matlab Handbook for DSP.
+  <Footer style={{ padding: '2rem' }}>
+    <div style={{ display: 'flex', flexDirection: 'column', gap: '4px', width: '100%' }}>
+      <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
+        <Logo />
+        <div style={{ fontSize: '0.8rem' }}>
+          MIT {new Date().getFullYear()} © Matlab Handbook for DSP.
+        </div>
+      </div>
+      <div style={{ fontSize: '0.8rem' }}>
+        Created with ❤️ by <b style={{ color: 'var(--fg)' }}>Sananda Patel</b> & <b style={{ color: 'var(--fg)' }}>Suprava Dutta</b>
+      </div>
+    </div>
   </Footer>
 )
 

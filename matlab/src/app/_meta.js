@@ -2,6 +2,10 @@ export default {
     index: {
         title: 'MATLAB',
     },
+    'contributing': {
+        title: 'Contribute',
+        type: 'page',
+    },
     'intro': {
         type: 'separator',
     },
