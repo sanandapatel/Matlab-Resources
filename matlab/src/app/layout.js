@@ -63,6 +63,10 @@ export default async function RootLayout({ children }) {
           }
         }}
       >
+        <meta name="description" content="Matlab Handbook for DSP" />
+        <meta name="keywords" content="Matlab, DSP, Handbook, Sananda Patel, Suprava Dutta" />
+        <meta property='og:image' content='/logo1.png' />
+        <meta property='og:title' content='Matlab Handbook for DSP' />
         {/* Your additional tags should be passed as `children` of `<Head>` element */}
       </Head>
       <body>
