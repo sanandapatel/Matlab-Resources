@@ -7,8 +7,51 @@ import Logo from '../components/Logo'
 export const metadata = {
   // Define your metadata here
   // For more information on metadata API, see: https://nextjs.org/docs/app/building-your-application/optimizing/metadata
+  title: 'Matlab Handbook for DSP',
+  description: 'Matlab Handbook for DSP',
+  authors: [
+    {
+      name: 'Sananda Patel',
+    },
+    {
+      name: 'Suprava Dutta',
+    },
+  ],
+  keywords: ['Matlab', 'DSP', 'Handbook', 'Sananda Patel', 'Suprava Dutta'],
+
   icons: {
     icon: '/logo1.png',
+  },
+  metadataBase: new URL('https://matlab-resources.vercel.app'),
+  openGraph: {
+    title: 'Matlab Handbook for DSP',
+    description: 'Matlab Handbook for DSP',
+    type: 'website',
+    siteName: 'Matlab Handbook for DSP',
+    images: [
+      {
+        url: '/logo1.png',
+        width: 1200,
+        height: 630,
+        alt: 'Matlab Handbook for DSP',
+      },
+    ],
+    type: 'website',
+  },
+  twitter: {
+    card: 'summary_large_image',
+    title: 'Matlab Handbook for DSP',
+    description: 'Matlab Handbook for DSP',
+    images: [
+      {
+        url: '/logo1.png',
+        width: 1200,
+        height: 630,
+        alt: 'Matlab Handbook for DSP',
+      },
+    ],
+    type: 'website',
+    siteName: 'Matlab Handbook for DSP',
   },
 }
 
