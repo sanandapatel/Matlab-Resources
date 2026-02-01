@@ -2,27 +2,89 @@ import { Footer, Layout, Navbar } from 'nextra-theme-docs'
 import { Banner, Head, Search } from 'nextra/components'
 import { getPageMap } from 'nextra/page-map'
 import 'nextra-theme-docs/style.css'
- 
+import Logo from '../components/Logo'
+
 export const metadata = {
   // Define your metadata here
   // For more information on metadata API, see: https://nextjs.org/docs/app/building-your-application/optimizing/metadata
+  title: 'Matlab Handbook for DSP',
+  description: 'Matlab Handbook for DSP',
+  authors: [
+    {
+      name: 'Sananda Patel',
+    },
+    {
+      name: 'Suprava Dutta',
+    },
+  ],
+  keywords: ['Matlab', 'DSP', 'Handbook', 'Sananda Patel', 'Suprava Dutta'],
+
+  icons: {
+    icon: '/logo1.png',
+  },
+  metadataBase: new URL('https://matlab-resources.vercel.app'),
+  openGraph: {
+    title: 'Matlab Handbook for DSP',
+    description: 'Matlab Handbook for DSP',
+    type: 'website',
+    siteName: 'Matlab Handbook for DSP',
+    images: [
+      {
+        url: '/logo1.png',
+        width: 1200,
+        height: 630,
+        alt: 'Matlab Handbook for DSP',
+      },
+    ],
+    type: 'website',
+  },
+  twitter: {
+    card: 'summary_large_image',
+    title: 'Matlab Handbook for DSP',
+    description: 'Matlab Handbook for DSP',
+    images: [
+      {
+        url: '/logo1.png',
+        width: 1200,
+        height: 630,
+        alt: 'Matlab Handbook for DSP',
+      },
+    ],
+    type: 'website',
+    siteName: 'Matlab Handbook for DSP',
+  },
 }
- 
-const banner = <Banner storageKey="some-key">DSP Booster with Matlab</Banner>
+
+const banner = <Banner storageKey="some-key">Boost your DSP skills with Matlab</Banner>
 const navbar = (
   <Navbar
     // logo={<b>DSP Booster with Matlab</b>}
-    logo={<b>Matlab Handbook for DSP</b>}
+    logo={
+      <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
+        <Logo />
+        <b>Matlab Handbook for DSP</b>
+      </div>
+    }
     projectLink="https://github.com/sanandapatel/Matlab-Resources"
-    // ... Your additional navbar options
+  // ... Your additional navbar options
   />
 )
 const footer = (
-  <Footer>
-    MIT {new Date().getFullYear()} © Matlab Handbook for DSP.
+  <Footer style={{ padding: '2rem' }}>
+    <div style={{ display: 'flex', flexDirection: 'column', gap: '4px', width: '100%' }}>
+      <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
+        <Logo />
+        <div style={{ fontSize: '0.8rem' }}>
+          MIT {new Date().getFullYear()} © Matlab Handbook for DSP.
+        </div>
+      </div>
+      <div style={{ fontSize: '0.8rem' }}>
+        Created with ❤️ by <b style={{ color: 'var(--fg)' }}>Sananda Patel</b> & <b style={{ color: 'var(--fg)' }}>Suprava Dutta</b>
+      </div>
+    </div>
   </Footer>
 )
- 
+
 export default async function RootLayout({ children }) {
   return (
     <html
@@ -34,7 +96,7 @@ export default async function RootLayout({ children }) {
       suppressHydrationWarning
     >
       <Head
-      // ... Your additional head options
+        // ... Your additional head options
         color={{
           hue: 300,
           saturation: 78,
@@ -44,6 +106,10 @@ export default async function RootLayout({ children }) {
           }
         }}
       >
+        <meta name="description" content="Matlab Handbook for DSP" />
+        <meta name="keywords" content="Matlab, DSP, Handbook, Sananda Patel, Suprava Dutta" />
+        <meta property='og:image' content='/logo1.png' />
+        <meta property='og:title' content='Matlab Handbook for DSP' />
         {/* Your additional tags should be passed as `children` of `<Head>` element */}
       </Head>
       <body>
@@ -55,7 +121,7 @@ export default async function RootLayout({ children }) {
           docsRepositoryBase="https://github.com/sanandapatel/Matlab-Resources/tree/main/matlab"
           footer={footer}
           search={<Search />}
-          // ... Your additional layout options
+        // ... Your additional layout options
         >
           {children}
         </Layout>
